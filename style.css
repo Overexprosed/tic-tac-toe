@@ -46,6 +46,7 @@ body {
     border-radius: 10%;
     box-shadow: 0 10px 10px rgba(0, 0, 0, .3);
     display: flex;
+    align-items: center;
     gap: 10px;
 }
 
@@ -56,12 +57,28 @@ body {
     background-size: 100%;
 }
 
-[data-field-turn = "turn-x"] .player-turn-sign {
+[data-field-turn = "x"] .player-turn-sign {
     background-image: url(./assets/x-gray.svg);
 }
 
-[data-field-turn = "turn-o"] .player-turn-sign {
+.game-board-field [data-field-turn = "x"]:hover {
+    background-image: url(./assets/x-outline.svg);
+}
+
+[data-field-state="x"] {
+    background-image: url(./assets/x.svg) !important;
+}
+
+[data-field-turn = "o"] .player-turn-sign {
     background-image: url(./assets/o-gray.svg);
+}
+
+.game-board-field [data-field-turn = "o"]:hover {
+    background-image: url(./assets/o-outline.svg);
+}
+
+[data-field-state="o"] {
+    background-image: url(./assets/o.svg) !important;
 }
 
 .restart-btn {
@@ -105,6 +122,15 @@ body {
     font-size: 3.5rem;
     outline: 2px solid rgba(255, 255, 255, .2);
     box-shadow: 0 10px 10px rgba(0, 0, 0, .5);
+}
+
+.game-board-field-state {
+    width: 100%;
+    height: 100%;
+    background-size: 60%;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: all .5s ease;
 }
 
 .score-display {
