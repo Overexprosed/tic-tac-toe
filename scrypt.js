@@ -1,15 +1,24 @@
 const game = (function () {
-    let squares = Array(9)
+    let fields = Array(9)
     let turn = "x"
 
-    const playRound = (index, doOnSuccess) => {
-        if (squares[index] == null) {
-            squares.splice(index, 1, turn)
+    const playRound = (field, doOnSuccess) => {
+        const index = field.getAttribute("data-index")
 
-            const winner = calculateWinner()
+        if (fields[index] == null) {
+            fields.splice(index, 1, field)
 
-            if (winner != null) {
-                // winner logic
+            field
+                .querySelector(".game-board-field-state")
+                .setAttribute("data-field-state", turn)
+
+            const winnerFields = calculateWinner()
+
+            if (winnerFields != null) {
+                winnerFields.forEach(field => {
+                    animate(field)
+                    field.classList.add("data-field-winner")
+                })
             } else {
                 changeTurn()
                 doOnSuccess()
@@ -23,26 +32,30 @@ const game = (function () {
     }
 
     const setTurn = (turn) => {
-        gameBoardFields.forEach((gameBoardField) => {
-            const fieldIndex = gameBoardField.getAttribute("data-index")
-            const fieldValue = squares[fieldIndex]
-
-            const fieldState = gameBoardField.querySelector(".game-board-field-state")
-            fieldState.setAttribute("data-field-turn", turn)
-            fieldState.setAttribute("data-field-state", fieldValue)
-
-            turnDisplay.setAttribute("data-field-turn", turn)
+        gameBoardFields.forEach((field) => {
+            field
+                .querySelector(".game-board-field-state")
+                .setAttribute("data-field-turn", turn)
         })
+        turnDisplay.setAttribute("data-field-turn", turn)
     }
 
     const reset = () => {
-        squares = Array(9)
+        fields = Array(9)
         turn = "x"
-        setTurn("x")
+
+        gameBoardFields.forEach((field) => {
+            field.classList.remove("data-field-winner")
+
+            const fieldState = field.querySelector(".game-board-field-state")
+            fieldState.setAttribute("data-field-state", "")
+            fieldState.setAttribute("data-field-turn", turn)
+        })
+
+        turnDisplay.setAttribute("data-field-turn", turn)
     }
 
     const calculateWinner = () => {
-        // Winning combinations. If X or O occupy this indexes, they're winners
         const lines = [
             [0, 1, 2],
             [3, 4, 5],
@@ -55,14 +68,24 @@ const game = (function () {
         ];
 
         for (const line of lines) {
-            const [a, b, c] = line;
+            const fieldArray = line.map(index => {
+                return fields[index]
+            })
 
-            if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-                return squares[a];
+            const values = fieldArray
+                .map(field => {
+                    return field ? field.querySelector(".game-board-field-state") : null
+                })
+                .map(state => {
+                    return state ? state.getAttribute("data-field-state") : null
+                })
+
+            if (values[0] && values[0] === values[1] && values[0] === values[2]) {
+                return fieldArray
             }
         }
 
-        return null;
+        return null
     }
 
     return { playRound, reset }
@@ -79,19 +102,16 @@ restartBtn.addEventListener("click", () => {
 
 gameBoardFields.forEach((field) => {
     field.addEventListener("click", () => {
-        const fieldIndex = field.getAttribute("data-index")
-        const doOnSuccess = () => animate(field)
-
-        game.playRound(fieldIndex, doOnSuccess)
+        game.playRound(field, () => animate(field))
     })
 })
 
 function animate(element) {
     function removeTransition(event) {
-        if (event.propertyName !== "transform") return;
-        event.target.classList.remove("clicked");
+        if (event.propertyName !== "transform") return
+        event.target.classList.remove("clicked")
     }
 
-    element.classList.add("clicked");
-    element.addEventListener("transitionend", removeTransition);
+    element.classList.add("clicked")
+    element.addEventListener("transitionend", removeTransition)
 }

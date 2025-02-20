@@ -65,8 +65,13 @@ body {
     background-image: url(./assets/x-outline.svg);
 }
 
-[data-field-state="x"] {
+[data-field-state = "x"] {
     background-image: url(./assets/x.svg) !important;
+}
+
+.data-field-winner > [data-field-state = "x"] {
+    background-color: var(--dark-cyan);
+    background-image: url(./assets/x-transparent.svg) !important;
 }
 
 [data-field-turn = "o"] .player-turn-sign {
@@ -77,8 +82,13 @@ body {
     background-image: url(./assets/o-outline.svg);
 }
 
-[data-field-state="o"] {
+[data-field-state = "o"] {
     background-image: url(./assets/o.svg) !important;
+}
+
+.data-field-winner > [data-field-state = "o"] {
+    background-color: var(--lighten-yellow);
+    background-image: url(./assets/o-transparent.svg) !important;
 }
 
 .restart-btn {
