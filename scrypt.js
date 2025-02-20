@@ -21,18 +21,16 @@ const game = (function () {
                     field.classList.add("data-field-winner")
                 })
                 displayController.incrementScore(turn)
-                reset(); return
+                displayController.cheers(turn)
             } else {
                 changeTurn()
                 doOnSuccess()
             }
 
             if (++playedRounds === 9) {
-                console.log(`played rounds = ${playedRounds}`)
                 displayController.incrementScore("tie")
-                reset()
+                displayController.cheers("tie")
             }
-            console.log(`played rounds = ${playedRounds}`)
         }
     }
 
@@ -50,7 +48,7 @@ const game = (function () {
         turnDisplay.setAttribute("data-field-turn", turn)
     }
 
-    const reset = () => {
+    const resetBoard = () => {
         fields = Array(9)
         playedRounds = 0
         turn = "x"
@@ -99,10 +97,11 @@ const game = (function () {
         return null
     }
 
-    return { playRound, reset }
+    return { playRound, resetBoard }
 })()
 
 const displayController = (function () {
+    const congratulationsForPlayer = document.querySelector(".congratulations-for-player")
     const displayForX = document.querySelector(".player-x-score > .score-display-value")
     const displayForO = document.querySelector(".player-o-score > .score-display-value")
     const displayForTie = document.querySelector(".tie-score > .score-display-value")
@@ -124,21 +123,79 @@ const displayController = (function () {
         element.textContent = numericValue + 1
     }
 
-    return { incrementScore }
+    const cheers = (turn) => {
+        setTimeout(() => { cheersFunc(turn) }, 1000)
+    }
+
+    const cheersFunc = (turn) => {
+        if (turn === "tie") {
+            tieModal.showModal()
+        } else {
+            congratulationsForPlayer.setAttribute("congratulation-for", turn)
+            congratulationModal.showModal()
+        }
+    }
+
+    const resetScore = () => {
+        displayForX.textContent = "0"
+        displayForO.textContent = "0"
+        displayForTie.textContent = "0"
+    }
+
+    return { incrementScore, cheers, resetScore }
 })()
 
+const congratulationModal = document.querySelector(".congratulation-dialog")
+const tieModal = document.querySelector(".tie-dialog")
 const turnDisplay = document.querySelector(".player-turn-display")
 const restartBtn = document.querySelector(".restart-btn")
+const quitButtons = document.querySelectorAll(".quit-btn")
+const nextButtons = document.querySelectorAll(".next-btn")
 const gameBoardFields = document.querySelectorAll(".game-board-field")
 
 restartBtn.addEventListener("click", () => {
-    game.reset()
+    game.resetBoard()
     animate(restartBtn)
 })
 
 gameBoardFields.forEach((field) => {
     field.addEventListener("click", () => {
         game.playRound(field, () => animate(field))
+    })
+})
+
+quitButtons.forEach(quitBtn => {
+    quitBtn.addEventListener("click", () => {
+        animate(quitBtn)
+
+        quitBtn.addEventListener(
+            "transitionend",
+            () => {
+                setTimeout(() => {
+                    game.resetBoard()
+                    displayController.resetScore()
+                    congratulationModal.close()
+                    tieModal.close()
+                }, 500)
+            }
+        )
+    })
+})
+
+nextButtons.forEach(nextBtn => {
+    nextBtn.addEventListener("click", () => {
+        animate(nextBtn)
+
+        nextBtn.addEventListener(
+            "transitionend",
+            () => {
+                setTimeout(() => {
+                    game.resetBoard()
+                    congratulationModal.close()
+                    tieModal.close()
+                }, 500)
+            }
+        )
     })
 })
 

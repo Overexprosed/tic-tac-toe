@@ -19,6 +19,10 @@
     margin: 0;
 }
 
+.disabled {
+    display: none !important;
+}
+
 body {
     font-family: 'Outfit', sans-serif;
     background-color: var(--primary);
@@ -179,6 +183,86 @@ body {
 .tie-score {
     background: var(--grey);
 }
+
+.congratulation-dialog,
+.tie-dialog {
+    background-color: var(--secondary);
+    color: var(--grey);
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    border: none;
+    outline: none;
+}
+
+.congratulation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 40px;
+}
+
+.congratulations-for-player {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.congratulations-for-tie-text {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.congratulation-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.congratulations-for-player-sign {
+    width: 40px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.quit-btn,
+.next-btn {
+    color: black;
+    display: grid;
+    place-items: center;
+    padding: 15px 40px;
+    border-radius: 10px;
+    font-weight: 700;
+    box-shadow: inset 0 -3px 2px rgba(0, 0, 0, .3);
+}
+
+.quit-btn {
+    background-color: var(--grey);
+}
+
+.next-btn {
+    background-color: var(--lighten-yellow);
+}
+
+[congratulation-for = "x"] .congratulations-for-player-sign {
+    background-image: url(./assets/x.svg);
+}
+
+[congratulation-for = "x"] .congratulations-for-player-text {
+    color: var(--dark-cyan);
+}
+
+[congratulation-for = "o"] .congratulations-for-player-sign {
+    background-image: url(./assets/o.svg);
+}
+
+[congratulation-for = "o"] .congratulations-for-player-text {
+    color: var(--lighten-yellow);
+}
+
 
 .clickable {
     transition: all .3s ease;
