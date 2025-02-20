@@ -19,6 +19,8 @@ const game = (function () {
                     animate(field)
                     field.classList.add("data-field-winner")
                 })
+                displayController.incrementScore(turn)
+                reset()
             } else {
                 changeTurn()
                 doOnSuccess()
@@ -89,6 +91,27 @@ const game = (function () {
     }
 
     return { playRound, reset }
+})()
+
+const displayController = (function () {
+    const displayForX = document.querySelector(".player-x-score > .score-display-value")
+    const displayForO = document.querySelector(".player-o-score > .score-display-value")
+
+    const incrementScore = (turn) => {
+        if (turn === "x") {
+            incrementScoreFor(displayForX)
+        } else {
+            incrementScoreFor(displayForO)
+        }
+    }
+
+    const incrementScoreFor = (element) => {
+        let currentValue = element.textContent.trim()
+        let numericValue = currentValue === "" ? 0 : parseInt(currentValue, 10)
+        element.textContent = numericValue + 1
+    }
+
+    return { incrementScore }
 })()
 
 const turnDisplay = document.querySelector(".player-turn-display")
