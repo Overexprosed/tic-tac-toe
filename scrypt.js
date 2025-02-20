@@ -21,7 +21,7 @@ const game = (function () {
                     field.classList.add("data-field-winner")
                 })
                 displayController.incrementScore(turn)
-                displayController.cheers(turn)
+                displayController.cheers(turn); return
             } else {
                 changeTurn()
                 doOnSuccess()
