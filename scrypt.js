@@ -1,9 +1,16 @@
 const game = (function () {
-    let fields = Array(9)
+    let fields = Array(9).fill(null)
     let playedRounds = 0
     let turn = "x"
+    let computerIsPlaying = false
 
     const playRound = (field, doOnSuccess) => {
+        doPlayRound(field, doOnSuccess, "human")
+    }
+
+    const doPlayRound = (field, doOnSuccess, player) => {
+        if (player === "human" && computerIsPlaying) return;
+
         const index = field.getAttribute("data-index")
 
         if (fields[index] == null) {
@@ -22,16 +29,44 @@ const game = (function () {
                 })
                 displayController.incrementScore(turn)
                 displayController.cheers(turn); return
-            } else {
-                changeTurn()
-                doOnSuccess()
             }
+
+            changeTurn()
+            doOnSuccess()
 
             if (++playedRounds === 9) {
                 displayController.incrementScore("tie")
-                displayController.cheers("tie")
+                displayController.cheers("tie"); return
+            }
+
+            if (!computerIsPlaying) {
+                computerIsPlaying = true
+
+                const randomField = pickRandomField()
+                setTimeout(() => {
+                    doPlayRound(randomField, () => animate(randomField))
+                    computerIsPlaying = false
+                }, 1000)
             }
         }
+    }
+
+    const pickRandomField = () => {
+        let zeroIndices = fields.reduce((acc, field, index) => {
+            if (field === null) {
+                acc.push(index);
+            }
+            return acc;
+        }, []);
+
+        if (zeroIndices.length > 0) {
+            let randomIndex = zeroIndices[Math.floor(Math.random() * zeroIndices.length)];
+            return gameBoardFields[randomIndex]
+        } else {
+            console.warn(`Not found NULL index`)
+        }
+
+        return null
     }
 
     const changeTurn = () => {
@@ -49,7 +84,7 @@ const game = (function () {
     }
 
     const resetBoard = () => {
-        fields = Array(9)
+        fields = Array(9).fill(null)
         playedRounds = 0
         turn = "x"
 
