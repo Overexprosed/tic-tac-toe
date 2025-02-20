@@ -1,5 +1,6 @@
 const game = (function () {
     let fields = Array(9)
+    let playedRounds = 0
     let turn = "x"
 
     const playRound = (field, doOnSuccess) => {
@@ -20,11 +21,18 @@ const game = (function () {
                     field.classList.add("data-field-winner")
                 })
                 displayController.incrementScore(turn)
-                reset()
+                reset(); return
             } else {
                 changeTurn()
                 doOnSuccess()
             }
+
+            if (++playedRounds === 9) {
+                console.log(`played rounds = ${playedRounds}`)
+                displayController.incrementScore("tie")
+                reset()
+            }
+            console.log(`played rounds = ${playedRounds}`)
         }
     }
 
@@ -44,6 +52,7 @@ const game = (function () {
 
     const reset = () => {
         fields = Array(9)
+        playedRounds = 0
         turn = "x"
 
         gameBoardFields.forEach((field) => {
@@ -96,12 +105,16 @@ const game = (function () {
 const displayController = (function () {
     const displayForX = document.querySelector(".player-x-score > .score-display-value")
     const displayForO = document.querySelector(".player-o-score > .score-display-value")
+    const displayForTie = document.querySelector(".tie-score > .score-display-value")
 
     const incrementScore = (turn) => {
-        if (turn === "x") {
-            incrementScoreFor(displayForX)
-        } else {
-            incrementScoreFor(displayForO)
+        switch (turn) {
+            case "tie":
+                incrementScoreFor(displayForTie); break
+            case "x":
+                incrementScoreFor(displayForX); break
+            case "o":
+                incrementScoreFor(displayForO)
         }
     }
 
